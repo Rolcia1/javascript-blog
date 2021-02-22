@@ -47,9 +47,10 @@ function titleClickHandler(event){
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
-  optArticleTagsSelector = '.post-tags .list';
+  optArticleTagsSelector = '.post-tags .list',
+  optArticleAuthorSelector = '.post-author';
 
-function generateTitleLinks(){
+function generateTitleLinks(customSelector = ''){
     
 
   /* usuń zawartość titleList- remove contents of titleList */
@@ -58,7 +59,7 @@ function generateTitleLinks(){
   titleList.innerHTML = '';
 
   /* dla każdego artykułu - for each article */
-  const articles = document.querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(optArticleSelector + customSelector);
   let html = '';
   for(let article of articles){
     console.log(article);
@@ -114,7 +115,7 @@ function generateTags(){
     for(let tag of articleTagsArray){
 
       /* generate HTML of the link */
-      const linkHTML = '<li><a href="#tag' + tag+ '"><span>' + tag + '</span></a>, </li>';
+      const linkHTML = '<li><a href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
 
       /* add generated code to html variable */
       html += linkHTML;
@@ -167,7 +168,7 @@ function tagClickHandler(event){
 
 function addClickListenersToTags(){
   /* znajdź wszystkie linki do tagów - find all links to tags */
-  const tagLinks = document.querySelectorAll('.titles a');
+  const tagLinks = document.querySelectorAll('a[href^="#tag-"]');
 /* START LOOP: dla każdego linku  - START LOOP: for each link */
   for(let link of tagLinks){
     /* dodaj tagClickHandler jako detektor zdarzeń dla tego linku - add tagClickHandler as event listener for that link */
@@ -177,3 +178,34 @@ function addClickListenersToTags(){
 }
 
 addClickListenersToTags();
+
+function generateAuthors(){
+  /* find all articles */
+  const articles = document.querySelectorAll(optArticleSelector);
+
+  /* START LOOP: for every article: */
+  for(let article of articles){
+    console.log(article);
+
+    /* find author wrapper */
+    const authorList = article.querySelector(optArticleAuthorSelector);
+
+    /* make html variable with empty string */
+    let html = '';
+
+    /* get author from 'post-author' attribute */
+    const articleAuthors = article.getAttribute('post-author');
+
+    /* generate HTML of the link */
+    const linkHTML = '<p class="post-author">by' + articleAuthors +'</p>';
+
+    /* add generated code to html variable */
+    html += linkHTML;
+    }
+ /* insert HTML of all the links into the author wrapper */
+ authorList.innerHTML = html;
+}
+
+generateAuthors();
+
+
