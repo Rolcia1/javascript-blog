@@ -194,10 +194,9 @@ function generateAuthors(){
     const articleAuthors = article.getAttribute('data-author');
 
     /* generate HTML of the link */
-    const linkHTML = '<p class="post-author">by ' + articleAuthors +'</p>';
+    const linkHTML = '<a href="#author-' + articleAuthors + '">' + articleAuthors + '</a>';;
 
-    /* add generated code to html variable */
-    linkHTML;
+
     
     /* insert HTML of all the links into the author wrapper */
     authorList.innerHTML = linkHTML;
@@ -212,9 +211,9 @@ function authorClickHandler(event){
   /* stwórz nową stałą o nazwie „clickedElement” i nadaj jej wartość „” - make new constant named "clickedElement" and give it the value of "this" */
   const clickedElement = this;
   /* stwórz nową stałą „author” i przeczytaj atrybut „post-author” klikniętego elementu - make a new constant "author" and read the attribute "author" of the clicked element */
-  const author = clickedElement.getAttribute('post-author');
+  const author = clickedElement.getAttribute('data-author');
     /* znajdź wszystkie linki do "autorów"" z aktywną klasą  - find all "author" links with class active */
-  const activeLinks = document.querySelectorAll('a.active[data-author]');
+  const activeLinks = document.querySelectorAll('a.active[href^="#author-"]');
 
 
   /* START LOOP: dla każdego aktywnego linku do autora -START LOOP: for each active author link */
@@ -224,7 +223,7 @@ function authorClickHandler(event){
   /*  END LOOP: dla każdego aktywnego linku do tagu - END LOOP: for each active tag link */
   }
   /* znajdź wszystkie linki do tagów z atrybutem „data-author” równym stałej „author”  - find all tag links with "href" attribute equal to the "href" constant */
-  const equalLinks = document.querySelectorAll('a[data-author]');
+  const equalLinks = document.querySelectorAll('a[href^="#author-"]');
   /* START LOOP: dla każdego znalezionego linku do autora  - START LOOP: for each found author link */
   for(let link of equalLinks){
     /* dodaj klasę aktywną - add class active */
@@ -232,13 +231,13 @@ function authorClickHandler(event){
     /* END LOOP: dla każdego znalezionego linku do tagu - END LOOP: for each found tag link */
   }
   /* wykonaj funkcję „generationTitleLinks” z selektorem artykułu jako argumentem - execute function "generateTitleLinks" with article selector as argument */
-  generateTitleLinks('[data-author"' + author + '"]');
+  generateTitleLinks('[data-author~="' + author+ '"]');
 }
 
 
 function addClickListenersToAuthors(){
 /* znajdź wszystkie linki do autorów- find all links to authors */
-const authorLinks = document.querySelectorAll('a[post-author]');
+const authorLinks = document.querySelectorAll('a[href^="#author-"]');
 /* START LOOP: dla każdego linku  - START LOOP: for each link */
   for(let link of authorLinks){
     /* dodaj tagClickHandler jako detektor zdarzeń dla tego linku - add tagClickHandler as event listener for that link */
