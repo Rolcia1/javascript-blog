@@ -211,7 +211,8 @@ function authorClickHandler(event){
   /* stwórz nową stałą o nazwie „clickedElement” i nadaj jej wartość „” - make new constant named "clickedElement" and give it the value of "this" */
   const clickedElement = this;
   /* stwórz nową stałą „author” i przeczytaj atrybut „post-author” klikniętego elementu - make a new constant "author" and read the attribute "author" of the clicked element */
-  const author = clickedElement.getAttribute('data-author');
+  const href = clickedElement.getAttribute('href');
+  const author = href.replace('#author-', '');
     /* znajdź wszystkie linki do "autorów"" z aktywną klasą  - find all "author" links with class active */
   const activeLinks = document.querySelectorAll('a.active[href^="#author-"]');
 
@@ -231,7 +232,7 @@ function authorClickHandler(event){
     /* END LOOP: dla każdego znalezionego linku do tagu - END LOOP: for each found tag link */
   }
   /* wykonaj funkcję „generationTitleLinks” z selektorem artykułu jako argumentem - execute function "generateTitleLinks" with article selector as argument */
-  generateTitleLinks('[data-author~="' + author+ '"]');
+  generateTitleLinks('[data-author="' + author+ '"]');
 }
 
 
@@ -246,3 +247,5 @@ const authorLinks = document.querySelectorAll('a[href^="#author-"]');
   }
 
 }
+
+addClickListenersToAuthors();
