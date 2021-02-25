@@ -48,7 +48,8 @@ const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
   optArticleTagsSelector = '.post-tags .list',
-  optArticleAuthorSelector = '.post-author';
+  optArticleAuthorSelector = '.post-author',
+  optTagsListSelector = '.tags.list';
 
 function generateTitleLinks(customSelector = ''){
     
@@ -89,9 +90,20 @@ function generateTitleLinks(customSelector = ''){
 
 generateTitleLinks();
 
+function calculateTagsParams(tags){
+  const params = { max = 0, min = 999999 }
+  for(let tag in tags){
+    console.log(tag + ' is used ' + tags[tag] + ' times');
+  }
 
+  return params;
+}
 
 function generateTags(){
+  
+  /* [NEW] create a new variable allTags with an empty object*/
+  let allTags = {};
+
   /* find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
 
@@ -119,6 +131,14 @@ function generateTags(){
 
       /* add generated code to html variable */
       html += linkHTML;
+
+      /* Sprawdzamy, czy dokładnie taki link mamy już w tablicy allTags - [NEW] check if this link is NOT already in allTags */
+      if (!allTags.hasOwnProperty(tag)){
+        /* Jeśli go nie mamy, dodajemy go do tej tablicy - [NEW] add generated code to allTags array */
+        allTags[tag] = 1;
+      } else {
+        allTags[tag]++;
+      }
     
     /* END LOOP: for each tag */
     }
@@ -128,7 +148,24 @@ function generateTags(){
 
   /* END LOOP: for every article: */
   }
+  /* Na końcu funkcji znajdujemy listę tagów - [NEW] find list of tags in right column */
+  const tagList = document.querySelector('.tags');
 
+  const tagsParams = calculateTagParams(allTags);
+  console.log('tagsParams:', tagsParams)
+
+  /* [NEW] create variablefor all links HTML ci=ode */
+  let allTagsHTML = '';
+  /* [NEW] START LOOP: for each tag in allTags: */
+  for(let tag in allTags){
+    /* [NEW] generate code of a link and it to allTagsHTML */
+    allTagsHTML += tag + ' (' + allTags[tag] + ') ';
+    /*[NEW] END LOOP: for each tag allTags: */
+  }
+
+  /* [NEW] add html from allTags to tagList */
+  tagList.innerHTML = allTagsHTML;
+  
 }
 
 generateTags();
@@ -249,3 +286,4 @@ const authorLinks = document.querySelectorAll('a[href^="#author-"]');
 }
 
 addClickListenersToAuthors();
+
