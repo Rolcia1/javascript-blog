@@ -1,5 +1,15 @@
 'use strict';
 
+const optArticleSelector = '.post',
+  optTitleSelector = '.post-title',
+  optTitleListSelector = '.titles',
+  optArticleTagsSelector = '.post-tags .list',
+  optArticleAuthorSelector = '.post-author',
+  optTagsListSelector = '.tags.list',
+  optCloudClassCount = "5",
+  optCloudClassPrefix = "tag-size-",
+  optAuthorsListSelector = '.author.list';
+
 function titleClickHandler(event){
   event.preventDefault();
   const clickedElement = this;
@@ -44,14 +54,7 @@ function titleClickHandler(event){
 
 
 
-const optArticleSelector = '.post',
-  optTitleSelector = '.post-title',
-  optTitleListSelector = '.titles',
-  optArticleTagsSelector = '.post-tags .list',
-  optArticleAuthorSelector = '.post-author',
-  optTagsListSelector = '.tags.list',
-  optCloudClassCount = "5",
-  optCloudClassPrefix = "tag-size-";
+
 
 function generateTitleLinks(customSelector = ''){
     
@@ -113,9 +116,16 @@ function calculateTagsParams(tags){
   return params;
 }
 
-function calculateTagClass(){
+function calculateTagClass(count, params){
+  
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
 
-}
+  /* Wystarczy dodać linię, która zwróci z funkcji stałą optCloudClassPrefix i dołączoną do niej stałą classNumber. Czyli? */
+  // optCloudClassPrefix classNumber
+ }
 
 function generateTags(){
   
@@ -177,10 +187,12 @@ function generateTags(){
   /* [NEW] START LOOP: for each tag in allTags: */
   for(let tag in allTags){
     /* [NEW] generate code of a link and it to allTagsHTML */
-    allTagsHTML += tagLinkHTML;
 
-    const tagLinkHTML = '<li>' + calculateTagClass(allTags[tag], tagsParams) + '</li>';
+    const tagLinkHTML = '<li><a class=' + calculateTagClass(allTags[tag], tagsParams) + ' ' + 'href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
     console.log('taglinkHTML:', tagLinkHTML);
+    allTagsHTML += tagLinkHTML;
+   
+
 
 
     /*[NEW] END LOOP: for each tag allTags: */
@@ -268,6 +280,9 @@ generateAuthors();
 function authorClickHandler(event){
   /* zapobiegaj domyślnej akcji dla tego zdarzenia - prevent default action for this event */ 
   event.preventDefault();
+/* [NEW] create a new variable allTags with an empty object*/
+  let allAuthors = {};
+
   /* stwórz nową stałą o nazwie „clickedElement” i nadaj jej wartość „” - make new constant named "clickedElement" and give it the value of "this" */
   const clickedElement = this;
   /* stwórz nową stałą „author” i przeczytaj atrybut „post-author” klikniętego elementu - make a new constant "author" and read the attribute "author" of the clicked element */
@@ -293,6 +308,10 @@ function authorClickHandler(event){
   }
   /* wykonaj funkcję „generationTitleLinks” z selektorem artykułu jako argumentem - execute function "generateTitleLinks" with article selector as argument */
   generateTitleLinks('[data-author="' + author+ '"]');
+  /* [NEW] chyba? */
+  const authorsLinkHTML = '<li><a class=' + calculateTagClass(allTags[tag], tagsParams) + ' ' + 'href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
+    console.log('taglinkHTML:', tagLinkHTML);
+    allTagsHTML += tagLinkHTML;
 }
 
 
