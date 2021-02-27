@@ -8,7 +8,7 @@ const optArticleSelector = '.post',
   optTagsListSelector = '.tags.list',
   optCloudClassCount = "5",
   optCloudClassPrefix = "tag-size-",
-  optAuthorsListSelector = '.author.list';
+  optAuthorsListSelector = '.authors.list';
 
 function titleClickHandler(event){
   event.preventDefault();
@@ -123,6 +123,8 @@ function calculateTagClass(count, params){
   const percentage = normalizedCount / normalizedMax;
   const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
 
+  return optCloudClassPrefix + classNumber;
+
   /* Wystarczy dodać linię, która zwróci z funkcji stałą optCloudClassPrefix i dołączoną do niej stałą classNumber. Czyli? */
   // optCloudClassPrefix classNumber
  }
@@ -188,7 +190,7 @@ function generateTags(){
   for(let tag in allTags){
     /* [NEW] generate code of a link and it to allTagsHTML */
 
-    const tagLinkHTML = '<li><a class=' + calculateTagClass(allTags[tag], tagsParams) + ' ' + 'href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
+    const tagLinkHTML = '<li><a class=' + calculateTagClass(allTags[tag], tagsParams) + ' ' + 'href="#tag-' + tag + '"><span>' + tag + '</span> (' + allTags[tag] + ') </a>, </li>';
     console.log('taglinkHTML:', tagLinkHTML);
     allTagsHTML += tagLinkHTML;
    
@@ -253,6 +255,7 @@ addClickListenersToTags();
 
 function generateAuthors(){
   /* find all articles */
+  let allAuthors = {};
   const articles = document.querySelectorAll(optArticleSelector);
 
   /* START LOOP: for every article: */
@@ -263,16 +266,32 @@ function generateAuthors(){
     const authorList = article.querySelector(optArticleAuthorSelector);
 
     /* get author from 'post-author' attribute */
-    const articleAuthors = article.getAttribute('data-author');
+    const articleAuthor = article.getAttribute('data-author');
 
     /* generate HTML of the link */
-    const linkHTML = '<a href="#author-' + articleAuthors + '">' + articleAuthors + '</a>';;
+    const linkHTML = '<a href="#author-' + articleAuthor + '">' + articleAuthor + '</a>';;
 
-
-    
+    if (!allAuthors.hasOwnProperty(articleAuthor)){
+      /* Jeśli go nie mamy, dodajemy go do tej tablicy - [NEW] add generated code to allTags array */
+      allAuthors[articleAuthor] = 1;
+    } else {
+      allAuthors[articleAuthor]++;
+    }
+ 
     /* insert HTML of all the links into the author wrapper */
     authorList.innerHTML = linkHTML;
   }
+  let allAuthorsHTML = '';
+  const authorsListWrapper = document.querySelector(optAuthorsListSelector);
+
+  for (let author in allAuthors) {
+    const authorLinkHTML = '<li><a href="#author-' + author + '"><span>' + author + '</span></a>  (' + allAuthors[author] + ') , </li>';
+ 
+    allAuthorsHTML += authorLinkHTML;
+  }
+ 
+  authorsListWrapper.innerHTML = allAuthorsHTML;
+
 }
 
 generateAuthors();
@@ -280,9 +299,6 @@ generateAuthors();
 function authorClickHandler(event){
   /* zapobiegaj domyślnej akcji dla tego zdarzenia - prevent default action for this event */ 
   event.preventDefault();
-/* [NEW] create a new variable allTags with an empty object*/
-  let allAuthors = {};
-
   /* stwórz nową stałą o nazwie „clickedElement” i nadaj jej wartość „” - make new constant named "clickedElement" and give it the value of "this" */
   const clickedElement = this;
   /* stwórz nową stałą „author” i przeczytaj atrybut „post-author” klikniętego elementu - make a new constant "author" and read the attribute "author" of the clicked element */
@@ -308,10 +324,7 @@ function authorClickHandler(event){
   }
   /* wykonaj funkcję „generationTitleLinks” z selektorem artykułu jako argumentem - execute function "generateTitleLinks" with article selector as argument */
   generateTitleLinks('[data-author="' + author+ '"]');
-  /* [NEW] chyba? */
-  const authorsLinkHTML = '<li><a class=' + calculateTagClass(allTags[tag], tagsParams) + ' ' + 'href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
-    console.log('taglinkHTML:', tagLinkHTML);
-    allTagsHTML += tagLinkHTML;
+
 }
 
 
