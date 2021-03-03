@@ -1,5 +1,11 @@
 'use strict';
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  tagLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  authorLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+}
+
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
@@ -78,7 +84,8 @@ function generateTitleLinks(customSelector = ''){
     const articleTitle = article.querySelector(optTitleSelector).innerHTML;    
 
     /* utwórz kod HTML linku - create HTML of the link */
-    const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+    const linkHTMLData = {id: articleId, title: articleTitle};
+    const linkHTML = templates.articleLink(linkHTMLData);
 
     /* wstaw link do listy linków - insert link into titleList */
     html += linkHTML;
@@ -157,7 +164,8 @@ function generateTags(){
     for(let tag of articleTagsArray){
 
       /* generate HTML of the link */
-      const linkHTML = '<li><a href="#tag-' + tag + '"><span>' + tag + '</span></a>, </li>';
+      const linkHTMLData = {id: tag, title: tag};
+      const linkHTML = templates.tagLink(linkHTMLData);
 
       /* add generated code to html variable */
       html += linkHTML;
@@ -269,7 +277,8 @@ function generateAuthors(){
     const articleAuthor = article.getAttribute('data-author');
 
     /* generate HTML of the link */
-    const linkHTML = '<a href="#author-' + articleAuthor + '">' + articleAuthor + '</a>';;
+    const linkHTMLData = {id: articleAuthor, title: articleAuthor };
+    const linkHTML = templates.authorLink(linkHTMLData);
 
     if (!allAuthors.hasOwnProperty(articleAuthor)){
       /* Jeśli go nie mamy, dodajemy go do tej tablicy - [NEW] add generated code to allTags array */
@@ -341,4 +350,3 @@ const authorLinks = document.querySelectorAll('a[href^="#author-"]');
 }
 
 addClickListenersToAuthors();
-
